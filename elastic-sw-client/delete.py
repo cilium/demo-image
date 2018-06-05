@@ -1,12 +1,11 @@
 from elasticsearch import Elasticsearch
-import os
 
-NAMESPACE = "NAMESPACE" in os.environ
+es = Elasticsearch(['elasticsearch:9200'])
 
-es = Elasticsearch(['elasticsearch.{}.svc.cluster.local:9200'.format(os.environ['NAMESPACE'])])
+print("Deleting Spaceship Diagnostics")
 
-print("Deleting Book 1")
-res = es.delete(index="sidious", doc_type="tome", id=1)
+res = es.delete(index="spaceship_diagnostics", doc_type="stats", id=1)
 
-print("Deleting Book 2")
-res = es.delete(index="sidious", doc_type="tome", id=2)
+print("Deleting Stormtrooper Performance Log")
+
+res = es.delete(index="troop_logs", doc_type="log", id=1)
