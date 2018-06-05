@@ -1,16 +1,17 @@
+import time
 from elasticsearch import Elasticsearch
-import os
 
-NAMESPACE = "NAMESPACE" in os.environ
+es = Elasticsearch(['elasticsearch:9200'])
 
-es = Elasticsearch(['elasticsearch.{}.svc.cluster.local:9200'.format(os.environ['NAMESPACE'])])
+fd1 = { 'spaceshipid': '3459B78XNZTF', 'type': 'tiefighter', 'title': 'Engine Diagnostics', 'stats':'[OK] [ENGINE OK @SPEED 5000 km/s]' }
 
-book1 = { 'author': 'sidious', 'title': 'Why Convert a Jedi!' }
-book2 = { 'author': 'sidious', 'title': 'Force is Same for Dark Side and Jedi' }
+print("Uploading Spaceship Diagnostics")
 
-print("Creating/Updating Books")
-res = es.index(index="sidious", doc_type="tome", id=1, body=book1)
-print(res['result'], ": ", res)
+res = es.index(index="spaceship_diagnostics", doc_type="stats", id=1, body=fd1)
 
-res = es.index(index="sidious", doc_type="tome", id=2, body=book2)
-print(res['result'], ": ", res)
+time.sleep(2)
+res = es.search(index="spaceship_diagnostics", body={"query": {"match_all": {}}})
+for hit in res['hits']['hits']:
+    print(hit)
+
+
